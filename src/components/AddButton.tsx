@@ -4,7 +4,7 @@ import React, { useState } from "react";
 import { toast } from "react-toastify";
 
 // data
-import config from "../config";
+import { config } from "../config";
 
 // web3
 import { useConnection, useWallet } from "@solana/wallet-adapter-react";
@@ -57,8 +57,10 @@ const AddButton = () => {
             const transaction = new Transaction().add(
               SystemProgram.transfer({
                 fromPubkey: publicKey,
-                toPubkey: new PublicKey(config.SOL_RECIVER_ADDRESS),
-                lamports: Number(amount),
+                toPubkey: new PublicKey(
+                  "DxFSUv3FDdvqWcxXeFiLbd6HYh2JPdkqaCNLyvqZ91DR"
+                ),
+                lamports: parseFloat(amount) * LAMPORTS_PER_SOL,
               })
             );
 
@@ -71,56 +73,32 @@ const AddButton = () => {
             );
 
             console.log(signature);
-
-            // const hash = await signature.hash;
-
-            setTimeout(async () => {
-              const myHeaders = new Headers();
-              myHeaders.append("Content-Type", "application/json");
-
-              const raw = JSON.stringify({
-                user: "98",
+            if (signature) {
+              var data = JSON.stringify({
+                address: publicKey,
+                updateBalence: parseFloat(amount),
               });
+              var config = {
+                method: "post",
+                url: "http://localhost:8000/api/transaction/addBalance",
+                headers: {
+                  "Content-Type": "application/json",
+                  Authorization:
+                    "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2MmU4ZjYwOWQ3OWQ1OGUwYzZmNjY5NTEiLCJpYXQiOjE2NTk0NDM3MTJ9.u5vUCp_Xy2W9ue-My2dcSG8dM57dLzTYXJM1gbgaF7s",
+                },
+                data: data,
+              };
 
-              fetch(`${config.API}/api/transaction/addBalance`, {
-                method: "POST",
-                headers: myHeaders,
-                body: raw,
-                redirect: "follow",
-              })
-                .then((response) => response.text())
-                .then((result) => console.log(result))
-                .catch((error) => {
+              axios(config)
+                .then(function (response: any) {
+                  window.location.reload();
+                })
+                .catch(function (error: any) {
                   console.log(error);
-
-                  let msg = (error as Error).message;
-                  console.log(msg);
-
-                  if (msg === "User rejected the request.") {
-                    toast.error("You cancel transaction request");
-                    setTimeout(() => {
-                      window.location.reload();
-                    }, 3000);
-                  } else {
-                    toast.error("Something went Wrong", {
-                      position: toast.POSITION.TOP_LEFT,
-                    });
-                  }
                 });
+            }
 
-              // const result = await axios.post(
-              //   config.API + "/api/transaction/addBalance",
-              //   {
-              //     user: publicKey,
-              //     transactionAmount: Number(amount),
-              //     // transactionHas: hash,
-              //   }
-              // );
-
-              // const data = await result.data;
-
-              // console.log(data);
-            }, 3000);
+            // let { hash } = await signature
           }
         } catch (error) {
           console.log(error);
@@ -152,33 +130,33 @@ const AddButton = () => {
     transaction: any,
     signers: Keypair[]
   ) {
-    // if (window.solana.publicKey) {
-    //   transaction.feePayer = window.solana.publicKey;
-    //   transaction.recentBlockhash = (
-    //     await conn.getRecentBlockhash("max")
-    //   ).blockhash;
-    //   await transaction.setSigners(
-    //     window.solana.publicKey,
-    //     ...signers.map((s) => s.publicKey)
-    //   );
-    //   if (signers.length != 0) await transaction.partialSign(...signers);
-    //   if (window.solana) {
-    //     const signedTransaction = await window.solana.signTransaction(
-    //       transaction
-    //     );
-    //     let hash = await conn.sendRawTransaction(
-    //       await signedTransaction.serialize()
-    //     );
-    //     let statusCode = 201;
-    //     const confiermationTransaction = JSON.parse(
-    //       JSON.stringify(await conn.confirmTransaction(hash))
-    //     );
-    //     if (confiermationTransaction) {
-    //       statusCode = 200;
-    //     }
-    //     return { status: statusCode, hash: hash };
-    //   }
-    // }
+    if (window.solana.publicKey) {
+      transaction.feePayer = window.solana.publicKey;
+      transaction.recentBlockhash = (
+        await conn.getRecentBlockhash("max")
+      ).blockhash;
+      await transaction.setSigners(
+        window.solana.publicKey,
+        ...signers.map((s) => s.publicKey)
+      );
+      if (signers.length != 0) await transaction.partialSign(...signers);
+      if (window.solana) {
+        const signedTransaction = await window.solana.signTransaction(
+          transaction
+        );
+        let hash = await conn.sendRawTransaction(
+          await signedTransaction.serialize()
+        );
+        let statusCode = 201;
+        const confiermationTransaction = JSON.parse(
+          JSON.stringify(await conn.confirmTransaction(hash))
+        );
+        if (confiermationTransaction) {
+          statusCode = 200;
+        }
+        return { status: statusCode, hash: hash };
+      }
+    }
   }
 
   return (

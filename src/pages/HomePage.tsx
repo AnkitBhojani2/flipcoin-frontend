@@ -2,7 +2,7 @@
 import React, { useEffect, useState } from "react";
 
 // data
-import config from "../config";
+import { config } from "../config";
 
 // components
 import AddButton from "../components/AddButton";
@@ -79,25 +79,29 @@ const HomePage = () => {
   // sign in
   const signInUser = async () => {
     // if user found
-    var myHeaders = new Headers();
-    myHeaders.append("Content-Type", "application/json");
+    try {
+      const data = JSON.stringify({
+        walletAddress: accountAddress,
+      });
 
-    var raw = JSON.stringify({
-      walletAddress: accountAddress,
-    });
+      const axiosConfig = {
+        method: "post",
+        url: `${config.API}/api/auth/signin`,
+        headers: {
+          "Content-Type": "application/json",
+        },
+        data: data,
+      };
 
-    fetch(`${config.API}/api/auth/signin`, {
-      method: "POST",
-      headers: myHeaders,
-      body: raw,
-      redirect: "follow",
-    })
-      .then((response) => response.json())
-      .then((result) => {
-        setBalance(result.user.walletBalance);
-        setUser(result.user.walletAddress);
-      })
-      .catch((error) => console.log("error", error));
+      const result = await axios(axiosConfig);
+
+      const axiosData = await result.data;
+
+      setBalance(axiosData.user.walletBalance);
+      setUser(axiosData.user.walletAddress);
+    } catch (error) {
+      console.log("error", error);
+    }
   };
 
   // sign up
@@ -160,7 +164,32 @@ const HomePage = () => {
       });
     }
 
-    setCoin(0);
+    var data = JSON.stringify({
+      address: publicKey,
+      updateBalence:
+        coin === randomNumber ? amount : -1 * parseFloat(String(amount)),
+    });
+
+    var config = {
+      method: "post",
+      url: "http://localhost:8000/api/transaction/addBalance",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization:
+          "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2MmU4ZjYwOWQ3OWQ1OGUwYzZmNjY5NTEiLCJpYXQiOjE2NTk0NDM3MTJ9.u5vUCp_Xy2W9ue-My2dcSG8dM57dLzTYXJM1gbgaF7s",
+      },
+      data: data,
+    };
+
+    axios(config)
+      .then(function (response: any) {
+        setCoin(0);
+        setBalance(response.data.updatedBalance);
+        window.location.reload();
+      })
+      .catch(function (error: any) {
+        console.log(error);
+      });
   };
 
   // send transaction
