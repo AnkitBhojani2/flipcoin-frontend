@@ -40,7 +40,8 @@ const HomePage = () => {
       .then((result) => {
         if (
           result.error === "USER does not exists" &&
-          publicKey !== undefined
+          publicKey !== null &&
+          accountAddress !== null
         ) {
           return signUpUser();
         }
