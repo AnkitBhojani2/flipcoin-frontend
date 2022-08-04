@@ -1,5 +1,5 @@
 // const API = process.env.API;
-const API = "http://localhost:5000";
+const API = "https://flipcoin-backend-1.herokuapp.com";
 
 export const config = {
   authenticateUser: `${API}/api/auth/authenticateUser`,

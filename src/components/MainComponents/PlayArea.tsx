@@ -18,10 +18,43 @@ const PlayArea = () => {
   const [lossState, setLossState] = useState(false);
 
   const showResult = () => {
-    setLossState(true);
-    // setTimeout(() => {
-    //   setLossState(false);
-    // }, 6000);
+    if(amount) {
+
+    var axios = require("axios");
+    var data = JSON.stringify({
+      walletAddress: publicKey,
+      digAmount: amount,
+    });
+
+    var config = {
+      method: "post",
+      url: "https://flipcoin-backend-1.herokuapp.com/api/transaction/doubleOrNothing",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      data: data,
+    };
+
+    axios(config)
+      .then(function (response:any) {
+        if(response.data.status === 1) {
+          setWinningState(true)
+          setTimeout(()=>{
+            window.location.reload();
+          }, 3000);
+        } else {
+          setLossState(true)
+          setTimeout(()=>{
+            window.location.reload();
+          }, 3000);
+        }
+      })
+      .catch(function (error:any) {
+        console.log(error);
+      });
+
+    }
+    // setLossState(true);
   };
 
   return (

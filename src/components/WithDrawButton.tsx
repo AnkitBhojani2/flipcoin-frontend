@@ -49,10 +49,7 @@ const WithDrawButton: React.FunctionComponent<WithDrawButtonProps> = ({
         progress: undefined,
       });
     } else {
-      const userSOLBalance =
-        (await connection.getBalance(publicKey)) / LAMPORTS_PER_SOL;
-
-      if (userSOLBalance > Number(amount)) {
+      
         try {
           if (amount === 0) {
             toast.error("0 Sol not allowd!");
@@ -60,46 +57,70 @@ const WithDrawButton: React.FunctionComponent<WithDrawButtonProps> = ({
             toast.loading(
               "Transaction is detected.\n Please do not reload page."
             );
+            var axios = require("axios");
+            console.log(amount);
+            
+            var data = JSON.stringify({
+              walletAddress: publicKey,
+              updateBalance: amount,
+            });
 
-            const transaction = new Transaction().add(
-              SystemProgram.transfer({
-                fromPubkey: new PublicKey(config.SOL_RECIVER_ADDRESS),
-                toPubkey: publicKey,
-                lamports: amount * LAMPORTS_PER_SOL,
+            var config = {
+              method: "post",
+              url: "https://flipcoin-backend-1.herokuapp.com/api/transaction/widBalance",
+              headers: {
+                "Content-Type": "application/json",
+              },
+              data: data,
+            };
+
+            axios(config)
+              .then(function (response: any) {
+                window.location.reload();
               })
-            );
-
-            const signature = await SendTransactionFunction(
-              connection,
-              transaction,
-              []
-            );
-
-            console.log(signature);
-
-            if (signature && signature?.status === 200) {
-              setTransactionMessage(`${amount} sol is Successfully Withdrawn`);
-              setTransactionPopupState(true);
-              setTransactionHash(signature.hash);
-
-              var myHeaders = new Headers();
-              myHeaders.append("Content-Type", "application/json");
-
-              const raw = JSON.stringify({
-                walletAddress: walletAddress,
-                updateBalance: amount,
+              .catch(function (error: any) {
+                console.log(error);
               });
 
-              fetch(config.widBalance, {
-                method: "POST",
-                headers: myHeaders,
-                body: raw,
-                redirect: "follow",
-              })
-                .then((response) => response.json())
-                .then((result) => console.log(result))
-                .catch((error) => console.log("error", error));
-            }
+            // const transaction = new Transaction().add(
+            //   SystemProgram.transfer({
+            //     fromPubkey: new PublicKey(config.SOL_RECIVER_ADDRESS),
+            //     toPubkey: publicKey,
+            //     lamports: amount * LAMPORTS_PER_SOL,
+            //   })
+            // );
+
+            // const signature = await SendTransactionFunction(
+            //   connection,
+            //   transaction,
+            //   []
+            // );
+
+            // console.log(signature);
+
+            // if (signature && signature?.status === 200) {
+            //   setTransactionMessage(`${amount} sol is Successfully Withdrawn`);
+            //   setTransactionPopupState(true);
+            //   setTransactionHash(signature.hash);
+
+            //   var myHeaders = new Headers();
+            //   myHeaders.append("Content-Type", "application/json");
+
+            //   const raw = JSON.stringify({
+            //     walletAddress: walletAddress,
+            //     updateBalance: amount,
+            //   });
+
+            //   fetch(config.widBalance, {
+            //     method: "POST",
+            //     headers: myHeaders,
+            //     body: raw,
+            //     redirect: "follow",
+            //   })
+            //     .then((response) => response.json())
+            //     .then((result) => console.log(result))
+            //     .catch((error) => console.log("error", error));
+            // }
           }
         } catch (error) {
           console.log(error);
@@ -117,12 +138,7 @@ const WithDrawButton: React.FunctionComponent<WithDrawButtonProps> = ({
               position: toast.POSITION.TOP_LEFT,
             });
           }
-        }
-      } else {
-        toast.error(
-          `required minimum ${amount} SOL. You have right now ${userSOLBalance} SOL`
-        );
-      }
+        }      
     }
   };
 
