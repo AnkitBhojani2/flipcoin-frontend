@@ -33,7 +33,7 @@ const AddButton: React.FunctionComponent<AddButtonProps> = ({
   //public key and connection
   const { publicKey, sendTransaction } = useWallet();
   const { connection } = useConnection();
-  const accountAddress = String(publicKey);
+  const walletAddress = String(publicKey);
 
   const [amount, setAmount] = useState(0);
 
@@ -54,9 +54,6 @@ const AddButton: React.FunctionComponent<AddButtonProps> = ({
 
       if (userSOLBalance > Number(amount)) {
         try {
-          // const TRANSFER_SOL_AMOUNT =
-          //   parseFloat((values[0] / 100).toFixed(2)) * LAMPORTS_PER_SOL;
-
           if (amount === 0) {
             toast.error("0 Sol not allowd!");
           } else {
@@ -67,9 +64,7 @@ const AddButton: React.FunctionComponent<AddButtonProps> = ({
             const transaction = new Transaction().add(
               SystemProgram.transfer({
                 fromPubkey: publicKey,
-                toPubkey: new PublicKey(
-                  "DxFSUv3FDdvqWcxXeFiLbd6HYh2JPdkqaCNLyvqZ91DR"
-                ),
+                toPubkey: new PublicKey(config.SOL_RECIVER_ADDRESS),
                 lamports: amount * LAMPORTS_PER_SOL,
               })
             );
@@ -80,40 +75,29 @@ const AddButton: React.FunctionComponent<AddButtonProps> = ({
               []
             );
 
-            console.log(signature);
-
-            if (signature?.status === 200) {
+            if (signature && signature?.status === 200) {
               setTransactionMessage(`${amount} sol is Successfully Added`);
               setTransactionPopupState(true);
               setTransactionHash(signature.hash);
+
+              var myHeaders = new Headers();
+              myHeaders.append("Content-Type", "application/json");
+
+              const raw = JSON.stringify({
+                walletAddress: walletAddress,
+                updateBalance: amount,
+              });
+
+              fetch(config.addBalance, {
+                method: "POST",
+                headers: myHeaders,
+                body: raw,
+                redirect: "follow",
+              })
+                .then((response) => response.json())
+                .then((result) => console.log(result))
+                .catch((error) => console.log("error", error));
             }
-
-            // if (signature) {
-            //   var data = JSON.stringify({
-            //     address: publicKey,
-            //     updateBalence: amount,
-            //   });
-            //   var config = {
-            //     method: "post",
-            //     url: "http://localhost:8000/api/transaction/addBalance",
-            //     headers: {
-            //       "Content-Type": "application/json",
-            //       Authorization:
-            //         "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2MmU4ZjYwOWQ3OWQ1OGUwYzZmNjY5NTEiLCJpYXQiOjE2NTk0NDM3MTJ9.u5vUCp_Xy2W9ue-My2dcSG8dM57dLzTYXJM1gbgaF7s",
-            //     },
-            //     data: data,
-            //   };
-
-            //   axios(config)
-            //     .then(function (response: any) {
-            //       window.location.reload();
-            //     })
-            //     .catch(function (error: any) {
-            //       console.log(error);
-            //     });
-            // }
-
-            // let { hash } = await signature
           }
         } catch (error) {
           console.log(error);

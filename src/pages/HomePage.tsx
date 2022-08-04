@@ -26,12 +26,46 @@ import {
 const axios = require("axios");
 
 const HomePage = () => {
-  // set Coin and Amount
+  // set user and balance
+  const [user, setUser] = useState("");
+  const [balance, setBalance] = useState("");
 
   //public key and connection
   const { publicKey, sendTransaction } = useWallet();
   const { connection } = useConnection();
-  const accountAddress = String(publicKey);
+  const walletAddress = String(publicKey);
+
+  useEffect(() => {
+    if (walletAddress !== null) {
+      validateUser();
+    }
+  }, [publicKey]);
+
+  const validateUser = async () => {
+    console.log(walletAddress);
+    if (walletAddress === null) {
+    } else {
+      var myHeaders = new Headers();
+      myHeaders.append("Content-Type", "application/json");
+
+      var raw = JSON.stringify({
+        walletAddress: walletAddress,
+      });
+
+      fetch(config.authenticateUser, {
+        method: "POST",
+        headers: myHeaders,
+        body: raw,
+        redirect: "follow",
+      })
+        .then((response) => response.json())
+        .then((result) => {
+          setUser(result.user.walletAddress);
+          setBalance(result.user.walletBalance);
+        })
+        .catch((error) => console.log("error", error));
+    }
+  };
 
   // user address and balance
   // const [user, setUser] = useState("");
@@ -41,7 +75,7 @@ const HomePage = () => {
     <div>
       <Navbar />
 
-      <Main />
+      <Main user={user} balance={balance} />
 
       <PlayArea />
 

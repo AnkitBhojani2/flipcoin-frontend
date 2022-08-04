@@ -1,6 +1,9 @@
+// const API = process.env.API;
+const API = "http://localhost:5000";
+
 export const config = {
-  API: "http://localhost:8000",
-  // API: "https://flipcoin-backend.herokuapp.com",
-  // API: "https://flipcoin-backend.vercel.app",
+  authenticateUser: `${API}/api/auth/authenticateUser`,
+  addBalance: `${API}/api/transaction/addBalance`,
+  widBalance: `${API}/api/transaction/widBalance`,
   SOL_RECIVER_ADDRESS: "DxFSUv3FDdvqWcxXeFiLbd6HYh2JPdkqaCNLyvqZ91DR",
 };

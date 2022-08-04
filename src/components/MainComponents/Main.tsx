@@ -8,11 +8,11 @@ import AddButton from "../AddButton";
 import TransactionPopUp from "../popUp/TransactionPopUp";
 
 type MainProps = {
-  // user: String;
-  // balance: any;
+  user: String;
+  balance: any;
 };
 
-const Main: React.FunctionComponent<MainProps> = () => {
+const Main: React.FunctionComponent<MainProps> = ({ user, balance }) => {
   const [transactionPopupState, setTransactionPopupState] = useState(false);
   const [transactionMessage, setTransactionMessage] = useState("");
   const [transactionHash, setTransactionHash] = useState("");
@@ -23,7 +23,7 @@ const Main: React.FunctionComponent<MainProps> = () => {
         <div className="container px-5 py-12 mx-auto">
           <div className="flex flex-wrap -m-4 text-center justify-between">
             <div className="p-4 md:w-1/4 sm:w-1/2 w-full">
-              <ShowBalance />
+              <ShowBalance user={user} balance={balance} />
             </div>
             <div className="p-4 md:w-1/4 sm:w-1/2 w-full">
               <AddButton
