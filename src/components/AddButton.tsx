@@ -19,18 +19,28 @@ import {
 // axios
 const axios = require("axios");
 
-const AddButton = () => {
+type AddButtonProps = {
+  setTransactionPopupState: React.Dispatch<React.SetStateAction<boolean>>;
+  setTransactionMessage: React.Dispatch<React.SetStateAction<string>>;
+  setTransactionHash: React.Dispatch<React.SetStateAction<string>>;
+};
+
+const AddButton: React.FunctionComponent<AddButtonProps> = ({
+  setTransactionPopupState,
+  setTransactionMessage,
+  setTransactionHash,
+}) => {
   //public key and connection
   const { publicKey, sendTransaction } = useWallet();
   const { connection } = useConnection();
   const accountAddress = String(publicKey);
 
-  const [amount, setAmount] = useState("0");
+  const [amount, setAmount] = useState(0);
 
   const addBalance = async () => {
     if (!publicKey) {
       return toast.error("Please Connect Your Wallet", {
-        position: "top-right",
+        position: "top-left",
         autoClose: 1000,
         hideProgressBar: true,
         closeOnClick: true,
@@ -47,7 +57,7 @@ const AddButton = () => {
           // const TRANSFER_SOL_AMOUNT =
           //   parseFloat((values[0] / 100).toFixed(2)) * LAMPORTS_PER_SOL;
 
-          if (Number(amount) === 0) {
+          if (amount === 0) {
             toast.error("0 Sol not allowd!");
           } else {
             toast.loading(
@@ -60,11 +70,9 @@ const AddButton = () => {
                 toPubkey: new PublicKey(
                   "DxFSUv3FDdvqWcxXeFiLbd6HYh2JPdkqaCNLyvqZ91DR"
                 ),
-                lamports: parseFloat(amount) * LAMPORTS_PER_SOL,
+                lamports: amount * LAMPORTS_PER_SOL,
               })
             );
-
-            console.log(transaction);
 
             const signature = await SendTransactionFunction(
               connection,
@@ -73,30 +81,37 @@ const AddButton = () => {
             );
 
             console.log(signature);
-            if (signature) {
-              var data = JSON.stringify({
-                address: publicKey,
-                updateBalence: parseFloat(amount),
-              });
-              var config = {
-                method: "post",
-                url: "http://localhost:8000/api/transaction/addBalance",
-                headers: {
-                  "Content-Type": "application/json",
-                  Authorization:
-                    "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2MmU4ZjYwOWQ3OWQ1OGUwYzZmNjY5NTEiLCJpYXQiOjE2NTk0NDM3MTJ9.u5vUCp_Xy2W9ue-My2dcSG8dM57dLzTYXJM1gbgaF7s",
-                },
-                data: data,
-              };
 
-              axios(config)
-                .then(function (response: any) {
-                  window.location.reload();
-                })
-                .catch(function (error: any) {
-                  console.log(error);
-                });
+            if (signature?.status === 200) {
+              setTransactionMessage(`${amount} sol is Successfully Added`);
+              setTransactionPopupState(true);
+              setTransactionHash(signature.hash);
             }
+
+            // if (signature) {
+            //   var data = JSON.stringify({
+            //     address: publicKey,
+            //     updateBalence: amount,
+            //   });
+            //   var config = {
+            //     method: "post",
+            //     url: "http://localhost:8000/api/transaction/addBalance",
+            //     headers: {
+            //       "Content-Type": "application/json",
+            //       Authorization:
+            //         "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2MmU4ZjYwOWQ3OWQ1OGUwYzZmNjY5NTEiLCJpYXQiOjE2NTk0NDM3MTJ9.u5vUCp_Xy2W9ue-My2dcSG8dM57dLzTYXJM1gbgaF7s",
+            //     },
+            //     data: data,
+            //   };
+
+            //   axios(config)
+            //     .then(function (response: any) {
+            //       window.location.reload();
+            //     })
+            //     .catch(function (error: any) {
+            //       console.log(error);
+            //     });
+            // }
 
             // let { hash } = await signature
           }
@@ -162,19 +177,20 @@ const AddButton = () => {
   return (
     <div className="block p-6 max-w-sm bg-white rounded-lg border border-gray-200 shadow-md hover:bg-gray-100 dark:bg-gray-800 dark:border-gray-700 dark:hover:bg-gray-700">
       <input
-        type="email"
-        id="email"
+        type="number"
         className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
         required
-        value={amount}
+        value={amount === 0 ? "" : amount}
         onChange={(e) => {
-          setAmount(e.target.value);
+          setAmount(Number(e.target.value));
         }}
       />
       <button
         type="button"
         className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 mr-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800 mt-3"
-        onClick={addBalance}
+        onClick={() => {
+          addBalance();
+        }}
       >
         Add Balance
       </button>

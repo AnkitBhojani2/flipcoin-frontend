@@ -1,9 +1,9 @@
 import React from "react";
-import WalletButton from "./WalletButton";
+import WalletButton from "../WalletButton";
 import { FaBitcoin } from "react-icons/fa";
 
 type WalletButtonProps = {
-  findAddress: any;
+  //   findAddress: any;
 };
 
 const Navbar: React.FunctionComponent<WalletButtonProps> = (props) => {
@@ -19,7 +19,7 @@ const Navbar: React.FunctionComponent<WalletButtonProps> = (props) => {
           <span className="ml-3 text-xl">CoinFlip</span>
         </a>
 
-        <WalletButton findAddress={props.findAddress} />
+        <WalletButton />
       </div>
     </header>
   );

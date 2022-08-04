@@ -4,7 +4,7 @@ import { WalletMultiButton } from "@solana/wallet-adapter-react-ui";
 import { WalletDisconnectButton } from "@solana/wallet-adapter-react-ui";
 
 type WalletButtonProps = {
-  findAddress: any;
+  // findAddress: any;
 };
 
 const WalletButton: React.FunctionComponent<WalletButtonProps> = (props) => {
