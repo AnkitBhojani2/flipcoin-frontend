@@ -35,11 +35,13 @@ const HomePage = () => {
   const { connection } = useConnection();
   const walletAddress = String(publicKey);
 
-  useEffect(() => {
-    if (walletAddress !== null) {
-      validateUser();
-    }
-  }, [publicKey]);
+  console.log(walletAddress);
+
+  // useEffect(() => {
+  //   if (walletAddress !== null) {
+  //     validateUser();
+  //   }
+  // }, [publicKey]);
 
   const validateUser = async () => {
     if (walletAddress === null) {
@@ -68,9 +70,7 @@ const HomePage = () => {
     }
   };
 
-  // user address and balance
-  // const [user, setUser] = useState("");
-  // const [balance, setBalance] = useState(0);
+  validateUser();
 
   return (
     <div>

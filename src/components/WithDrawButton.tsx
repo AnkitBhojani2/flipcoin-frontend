@@ -71,7 +71,7 @@ const WithDrawButton: React.FunctionComponent<WithDrawButtonProps> = ({
             updateBalance: amount,
           });
 
-          fetch(config.addBalance, {
+          fetch(config.widBalance, {
             method: "POST",
             headers: myHeaders,
             body: raw,
@@ -79,8 +79,8 @@ const WithDrawButton: React.FunctionComponent<WithDrawButtonProps> = ({
           })
             .then((response) => response.json())
             .then((result) => {
-              console.log(result);
               toast.dismiss();
+              setTransactionHash(result.signature);
               setTransactionMessage(`${amount} sol is Successfully withdrawn`);
               setTransactionPopupState(true);
               validateUser();

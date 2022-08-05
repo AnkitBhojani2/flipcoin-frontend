@@ -16,7 +16,7 @@ const Navbar: React.FunctionComponent<WalletButtonProps> = (props) => {
         >
           <FaBitcoin size="2em" />
 
-          <span className="ml-3 text-xl">CoinFlip</span>
+          <span className="ml-3 text-xl">FlipCoin</span>
         </a>
 
         <WalletButton />
