@@ -14,7 +14,7 @@ const ShowBalance: React.FunctionComponent<ShowBalanceProps> = (props) => {
       <h5 className="mb-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-white">
         {!publicKey
           ? "Account Address"
-          : String(props.user).length !> 4 ? "loading" : props.user.slice(0, 6) + "..."}
+          : String(props.user).length < 5 ? "loading" : props.user.slice(0, 6) + "..."}
       </h5>
       <h5 className="mb-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-white">
         {props.balance} sol
