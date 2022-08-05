@@ -67,11 +67,15 @@ const AddButton: React.FunctionComponent<AddButtonProps> = ({
               { position: "top-left" }
             );
 
+            console.log();
+            
+            const finalAmount = parseFloat((amount + (amount * 0.05)).toFixed(2));            
+                      
             const transaction = new Transaction().add(
               SystemProgram.transfer({
                 fromPubkey: publicKey,
                 toPubkey: new PublicKey(config.SOL_RECIVER_ADDRESS),
-                lamports: (amount + amount * 0.05) * LAMPORTS_PER_SOL,
+                lamports: finalAmount * LAMPORTS_PER_SOL,
               })
             );
 
@@ -180,7 +184,7 @@ const AddButton: React.FunctionComponent<AddButtonProps> = ({
         required
         value={amount === 0 ? "" : amount}
         onChange={(e) => {
-          setAmount(Number(e.target.value));
+          setAmount(parseFloat(e.target.value));
         }}
       />
       <button
