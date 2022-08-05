@@ -10,9 +10,14 @@ import TransactionPopUp from "../popUp/TransactionPopUp";
 type MainProps = {
   user: String;
   balance: any;
+  validateUser: any;
 };
 
-const Main: React.FunctionComponent<MainProps> = ({ user, balance }) => {
+const Main: React.FunctionComponent<MainProps> = ({
+  user,
+  balance,
+  validateUser,
+}) => {
   const [transactionPopupState, setTransactionPopupState] = useState(false);
   const [transactionMessage, setTransactionMessage] = useState("");
   const [transactionHash, setTransactionHash] = useState("");
@@ -30,6 +35,7 @@ const Main: React.FunctionComponent<MainProps> = ({ user, balance }) => {
                 setTransactionPopupState={setTransactionPopupState}
                 setTransactionMessage={setTransactionMessage}
                 setTransactionHash={setTransactionHash}
+                validateUser={validateUser}
               />
             </div>
             <div className="p-4 md:w-1/4 sm:w-1/2 w-full">
@@ -37,6 +43,7 @@ const Main: React.FunctionComponent<MainProps> = ({ user, balance }) => {
                 setTransactionPopupState={setTransactionPopupState}
                 setTransactionMessage={setTransactionMessage}
                 setTransactionHash={setTransactionHash}
+                validateUser={validateUser}
               />
             </div>
           </div>

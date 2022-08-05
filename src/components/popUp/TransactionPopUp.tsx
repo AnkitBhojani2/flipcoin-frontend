@@ -1,4 +1,5 @@
 import React from "react";
+import { FaTimes } from "react-icons/fa";
 
 type TransactionPopUpProps = {
   transactionPopupState: Boolean;
@@ -26,12 +27,21 @@ const TransactionPopUp: React.FunctionComponent<TransactionPopUpProps> = ({
       <div className="absolute top-10 w-full max-w-xl h-full md:h-auto">
         {/* Modal content */}
         <div className="relative bg-white rounded-lg shadow dark:bg-gray-700">
+          <div className="flex justify-end pr-3 pt-3 cursor-pointer">
+            <FaTimes
+              color="white"
+              size="2em"
+              onClick={() => {
+                setTransactionPopupState(false);
+              }}
+            />
+          </div>
           {/* Modal body */}
-          <div className="flex flex-col justify-center items-center py-8">
-            <p className="text-xl leading-relaxed text-gray-500 dark:text-gray-400 text-center my-3">
+          <div className="flex flex-col justify-center items-center py-8 pt-0">
+            <div className="text-xl leading-relaxed text-gray-500 dark:text-gray-400 text-center my-3">
               <div>Ahoy !</div>
               <div>{transactionMessage}</div>
-            </p>
+            </div>
             <div>
               <button
                 type="button"

@@ -23,12 +23,14 @@ type WithDrawButtonProps = {
   setTransactionPopupState: React.Dispatch<React.SetStateAction<boolean>>;
   setTransactionMessage: React.Dispatch<React.SetStateAction<string>>;
   setTransactionHash: React.Dispatch<React.SetStateAction<string>>;
+  validateUser: any;
 };
 
 const WithDrawButton: React.FunctionComponent<WithDrawButtonProps> = ({
   setTransactionPopupState,
   setTransactionMessage,
   setTransactionHash,
+  validateUser,
 }) => {
   //public key and connection
   const { publicKey, sendTransaction } = useWallet();
@@ -49,96 +51,63 @@ const WithDrawButton: React.FunctionComponent<WithDrawButtonProps> = ({
         progress: undefined,
       });
     } else {
-      
-        try {
-          if (amount === 0) {
-            toast.error("0 Sol not allowd!");
-          } else {
-            toast.loading(
-              "Transaction is detected.\n Please do not reload page."
-            );
-            var axios = require("axios");
-            console.log(amount);
-            
-            var data = JSON.stringify({
-              walletAddress: publicKey,
-              updateBalance: amount,
-            });
+      try {
+        if (amount === 0) {
+          toast.error("0 Sol not allowd!", {
+            position: "top-left",
+            autoClose: 3000,
+          });
+        } else {
+          toast.loading(
+            "Transaction is detected.\n Please do not reload page.",
+            { position: "top-left" }
+          );
 
-            var config = {
-              method: "post",
-              url: "https://flipcoin-backend-1.herokuapp.com/api/transaction/widBalance",
-              headers: {
-                "Content-Type": "application/json",
-              },
-              data: data,
-            };
+          var myHeaders = new Headers();
+          myHeaders.append("Content-Type", "application/json");
 
-            axios(config)
-              .then(function (response: any) {
-                window.location.reload();
-              })
-              .catch(function (error: any) {
-                console.log(error);
-              });
+          var raw = JSON.stringify({
+            walletAddress: publicKey,
+            updateBalance: amount,
+          });
 
-            // const transaction = new Transaction().add(
-            //   SystemProgram.transfer({
-            //     fromPubkey: new PublicKey(config.SOL_RECIVER_ADDRESS),
-            //     toPubkey: publicKey,
-            //     lamports: amount * LAMPORTS_PER_SOL,
-            //   })
-            // );
+          fetch(config.addBalance, {
+            method: "POST",
+            headers: myHeaders,
+            body: raw,
+            redirect: "follow",
+          })
+            .then((response) => response.json())
+            .then((result) => {
+              console.log(result);
+              toast.dismiss();
+              setTransactionMessage(`${amount} sol is Successfully withdrawn`);
+              setTransactionPopupState(true);
+              validateUser();
+              setAmount(0);
+            })
+            .catch((error) => console.log("error", error));
+        }
+      } catch (error) {
+        console.log(error);
 
-            // const signature = await SendTransactionFunction(
-            //   connection,
-            //   transaction,
-            //   []
-            // );
+        let msg = (error as Error).message;
+        console.log(msg);
 
-            // console.log(signature);
-
-            // if (signature && signature?.status === 200) {
-            //   setTransactionMessage(`${amount} sol is Successfully Withdrawn`);
-            //   setTransactionPopupState(true);
-            //   setTransactionHash(signature.hash);
-
-            //   var myHeaders = new Headers();
-            //   myHeaders.append("Content-Type", "application/json");
-
-            //   const raw = JSON.stringify({
-            //     walletAddress: walletAddress,
-            //     updateBalance: amount,
-            //   });
-
-            //   fetch(config.widBalance, {
-            //     method: "POST",
-            //     headers: myHeaders,
-            //     body: raw,
-            //     redirect: "follow",
-            //   })
-            //     .then((response) => response.json())
-            //     .then((result) => console.log(result))
-            //     .catch((error) => console.log("error", error));
-            // }
-          }
-        } catch (error) {
-          console.log(error);
-
-          let msg = (error as Error).message;
-          console.log(msg);
-
-          if (msg === "User rejected the request.") {
-            toast.error("You cancel transaction request");
-            setTimeout(() => {
-              window.location.reload();
-            }, 3000);
-          } else {
-            toast.error("Something went Wrong", {
-              position: toast.POSITION.TOP_LEFT,
-            });
-          }
-        }      
+        if (msg === "User rejected the request.") {
+          toast.error("You cancel transaction request");
+          setTimeout(() => {
+            toast.dismiss();
+          }, 3000);
+        } else {
+          toast.error("Something went Wrong", {
+            position: toast.POSITION.TOP_LEFT,
+          });
+          setTimeout(() => {
+            toast.dismiss();
+          }, 3000);
+        }
+      }
     }
   };
 

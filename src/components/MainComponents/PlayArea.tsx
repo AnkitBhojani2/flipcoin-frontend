@@ -1,5 +1,8 @@
 import React, { useState } from "react";
 
+// config
+import { config } from "../../config";
+
 // web3
 import { useConnection, useWallet } from "@solana/wallet-adapter-react";
 
@@ -8,7 +11,11 @@ import { toast } from "react-toastify";
 import WinningPopUp from "../popUp/WinningPopUp";
 import LossPopUp from "../popUp/LossPopUp";
 
-const PlayArea = () => {
+type PlayAreaProps = {
+  validateUser: any;
+};
+
+const PlayArea: React.FunctionComponent<PlayAreaProps> = ({ validateUser }) => {
   const { publicKey, sendTransaction } = useWallet();
   const [coin, setCoin] = useState(0);
   const [amount, setAmount] = useState(0.05);
@@ -17,44 +24,45 @@ const PlayArea = () => {
   const [WinningState, setWinningState] = useState(false);
   const [lossState, setLossState] = useState(false);
 
-  const showResult = () => {
-    if(amount) {
-
-    var axios = require("axios");
-    var data = JSON.stringify({
-      walletAddress: publicKey,
-      digAmount: amount,
-    });
-
-    var config = {
-      method: "post",
-      url: "https://flipcoin-backend-1.herokuapp.com/api/transaction/doubleOrNothing",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      data: data,
-    };
-
-    axios(config)
-      .then(function (response:any) {
-        if(response.data.status === 1) {
-          setWinningState(true)
-          setTimeout(()=>{
-            window.location.reload();
-          }, 3000);
-        } else {
-          setLossState(true)
-          setTimeout(()=>{
-            window.location.reload();
-          }, 3000);
-        }
-      })
-      .catch(function (error:any) {
-        console.log(error);
+  const doubleOrNothing = () => {
+    if (!publicKey) {
+      return toast.error("Please Connect Your Wallet", {
+        position: "top-left",
+        autoClose: 1000,
+        hideProgressBar: true,
+        closeOnClick: true,
+        pauseOnHover: false,
+        draggable: true,
+        progress: undefined,
       });
+    } else {
+      try {
+        var myHeaders = new Headers();
+        myHeaders.append("Content-Type", "application/json");
 
+        var raw = JSON.stringify({
+          walletAddress: publicKey,
+          digAmount: amount,
+        });
+
+        fetch(config.doubleOrNothing, {
+          method: "POST",
+          headers: myHeaders,
+          body: raw,
+          redirect: "follow",
+        })
+          .then((response) => response.json())
+          .then((result) => {
+            if (result.status === 0) {
+              setLossState(true);
+            } else if (result.status === 1) {
+              setWinningState(true);
+            }
+            validateUser();
+          })
+          .catch((error) => console.log("error", error));
+      } catch (error) {}
     }
-    // setLossState(true);
   };
 
   return (
@@ -168,7 +176,7 @@ const PlayArea = () => {
           <button
             type="button"
             className="text-white bg-red-700 hover:bg-red-800 focus:outline-none focus:ring-4 focus:ring-red-300 font-medium rounded-full px-5 py-2.5 text-center mr-2 mb-2 dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-900"
-            onClick={showResult}
+            onClick={doubleOrNothing}
           >
             Double Or Nothing
           </button>

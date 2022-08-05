@@ -23,12 +23,14 @@ type AddButtonProps = {
   setTransactionPopupState: React.Dispatch<React.SetStateAction<boolean>>;
   setTransactionMessage: React.Dispatch<React.SetStateAction<string>>;
   setTransactionHash: React.Dispatch<React.SetStateAction<string>>;
+  validateUser: any;
 };
 
 const AddButton: React.FunctionComponent<AddButtonProps> = ({
   setTransactionPopupState,
   setTransactionMessage,
   setTransactionHash,
+  validateUser,
 }) => {
   //public key and connection
   const { publicKey, sendTransaction } = useWallet();
@@ -55,10 +57,14 @@ const AddButton: React.FunctionComponent<AddButtonProps> = ({
       if (userSOLBalance > Number(amount)) {
         try {
           if (amount === 0) {
-            toast.error("0 Sol not allowd!");
+            toast.error("0 Sol not allowd!", {
+              position: "top-left",
+              autoClose: 3000,
+            });
           } else {
             toast.loading(
-              "Transaction is detected.\n Please do not reload page."
+              "Transaction is detected.\n Please do not reload page.",
+              { position: "top-left" }
             );
 
             const transaction = new Transaction().add(
@@ -76,9 +82,11 @@ const AddButton: React.FunctionComponent<AddButtonProps> = ({
             );
 
             if (signature && signature?.status === 200) {
+              toast.dismiss();
               setTransactionMessage(`${amount} sol is Successfully Added`);
-              setTransactionPopupState(true);
+
               setTransactionHash(signature.hash);
+              setTransactionPopupState(true);
 
               var myHeaders = new Headers();
               myHeaders.append("Content-Type", "application/json");
@@ -95,7 +103,10 @@ const AddButton: React.FunctionComponent<AddButtonProps> = ({
                 redirect: "follow",
               })
                 .then((response) => response.json())
-                .then((result) => console.log(result))
+                .then((result) => {
+                  validateUser();
+                  setAmount(0);
+                })
                 .catch((error) => console.log("error", error));
             }
           }
@@ -108,12 +119,15 @@ const AddButton: React.FunctionComponent<AddButtonProps> = ({
           if (msg === "User rejected the request.") {
             toast.error("You cancel transaction request");
             setTimeout(() => {
-              window.location.reload();
+              toast.dismiss();
             }, 3000);
           } else {
             toast.error("Something went Wrong", {
               position: toast.POSITION.TOP_LEFT,
             });
+            setTimeout(() => {
+              toast.dismiss();
+            }, 3000);
           }
         }
       } else {

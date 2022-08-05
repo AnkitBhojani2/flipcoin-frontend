@@ -28,10 +28,10 @@ const LossPopUp: React.FunctionComponent<LossPopUpProps> = ({
             <div>
               <FaFrown color="yellow" size="6em" />
             </div>
-            <p className="text-xl leading-relaxed text-gray-500 dark:text-gray-400 text-center my-3">
+            <div className="text-xl leading-relaxed text-gray-500 dark:text-gray-400 text-center my-3">
               <div>Sorry !</div>
               <div>Beter Luck Next Time</div>
-            </p>
+            </div>
             <div>
               <button
                 type="button"

@@ -42,7 +42,6 @@ const HomePage = () => {
   }, [publicKey]);
 
   const validateUser = async () => {
-    console.log(walletAddress);
     if (walletAddress === null) {
     } else {
       var myHeaders = new Headers();
@@ -60,8 +59,10 @@ const HomePage = () => {
       })
         .then((response) => response.json())
         .then((result) => {
-          setUser(result.user.walletAddress);
-          setBalance(result.user.walletBalance);
+          if (result.user.walletAddress !== null) {
+            setUser(result.user.walletAddress);
+            setBalance(result.user.walletBalance);
+          }
         })
         .catch((error) => console.log("error", error));
     }
@@ -75,9 +76,9 @@ const HomePage = () => {
     <div>
       <Navbar />
 
-      <Main user={user} balance={balance} />
+      <Main user={user} balance={balance} validateUser={validateUser} />
 
-      <PlayArea />
+      <PlayArea validateUser={validateUser} />
 
       <ToastContainer />
     </div>
