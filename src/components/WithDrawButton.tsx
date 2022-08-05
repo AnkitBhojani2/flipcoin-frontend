@@ -59,7 +59,7 @@ const WithDrawButton: React.FunctionComponent<WithDrawButtonProps> = ({
           });
         } else {
           toast.loading(
-            "Transaction is detected.\n Please do not reload page.",
+            "Transaction is detected.\n Please do not reload page. You charged 5% For this transaction!",
             { position: "top-left" }
           );
 
@@ -80,7 +80,7 @@ const WithDrawButton: React.FunctionComponent<WithDrawButtonProps> = ({
             .then((response) => response.json())
             .then((result) => {
               toast.dismiss();
-              setTransactionHash(result.signature);
+              setTransactionHash(result.transaction);
               setTransactionMessage(`${amount} sol is Successfully withdrawn`);
               setTransactionPopupState(true);
               validateUser();

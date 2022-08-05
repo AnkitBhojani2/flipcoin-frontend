@@ -71,7 +71,7 @@ const AddButton: React.FunctionComponent<AddButtonProps> = ({
               SystemProgram.transfer({
                 fromPubkey: publicKey,
                 toPubkey: new PublicKey(config.SOL_RECIVER_ADDRESS),
-                lamports: amount * LAMPORTS_PER_SOL,
+                lamports: (amount + amount * 0.05) * LAMPORTS_PER_SOL,
               })
             );
 

@@ -35,14 +35,6 @@ const HomePage = () => {
   const { connection } = useConnection();
   const walletAddress = String(publicKey);
 
-  console.log(walletAddress);
-
-  // useEffect(() => {
-  //   if (walletAddress !== null) {
-  //     validateUser();
-  //   }
-  // }, [publicKey]);
-
   const validateUser = async () => {
     if (walletAddress === null) {
     } else {
@@ -78,7 +70,7 @@ const HomePage = () => {
 
       <Main user={user} balance={balance} validateUser={validateUser} />
 
-      <PlayArea validateUser={validateUser} />
+      <PlayArea validateUser={validateUser} balance={balance} />
 
       <ToastContainer />
     </div>

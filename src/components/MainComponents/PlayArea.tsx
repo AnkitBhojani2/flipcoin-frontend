@@ -13,9 +13,10 @@ import LossPopUp from "../popUp/LossPopUp";
 
 type PlayAreaProps = {
   validateUser: any;
+  balance: any;
 };
 
-const PlayArea: React.FunctionComponent<PlayAreaProps> = ({ validateUser }) => {
+const PlayArea: React.FunctionComponent<PlayAreaProps> = ({ validateUser, balance }) => {
   const { publicKey, sendTransaction } = useWallet();
   const [coin, setCoin] = useState(0);
   const [amount, setAmount] = useState(0.05);
@@ -37,6 +38,8 @@ const PlayArea: React.FunctionComponent<PlayAreaProps> = ({ validateUser }) => {
       });
     } else {
       try {
+
+        if(balance > amount) {
         var myHeaders = new Headers();
         myHeaders.append("Content-Type", "application/json");
 
@@ -61,6 +64,9 @@ const PlayArea: React.FunctionComponent<PlayAreaProps> = ({ validateUser }) => {
             validateUser();
           })
           .catch((error) => console.log("error", error));
+        } else {
+          toast.error(`You don't have balance!!`);
+        }
       } catch (error) {}
     }
   };
