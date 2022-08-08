@@ -78,7 +78,7 @@ const HomePage = () => {
         />
 
         {showDashboard ? (
-          <Dashboard />
+          <Dashboard validateUser={validateUser} balance={balance} />
         ) : (
           <Balance validateUser={validateUser} user={user} balance={balance} />
         )}

@@ -8,6 +8,10 @@
     url("../assets/files/7032-fontps-webfont.woff") format("woff2");
 }
 
+.rebeccapurple {
+  background-color: rebeccapurple !important;
+}
+
 .home {
   position: relative;
   height: 100vh;
