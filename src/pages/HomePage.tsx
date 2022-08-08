@@ -3,9 +3,10 @@ import React, { useEffect, useState } from "react";
 
 // data
 import { config } from "../config";
+import "./home.css";
 
 // components
-import Navbar from "../components/MainComponents/Navbar";
+import Navbar from "../layouts/Navbar";
 import Main from "../components/MainComponents/Main";
 import PlayArea from "../components/MainComponents/PlayArea";
 
@@ -21,6 +22,8 @@ import {
   SystemProgram,
   Keypair,
 } from "@solana/web3.js";
+import Dashboard from "../layouts/Dashboard";
+import Balance from "../layouts/Balance";
 
 // axios
 const axios = require("axios");
@@ -34,6 +37,8 @@ const HomePage = () => {
   const { publicKey, sendTransaction } = useWallet();
   const { connection } = useConnection();
   const walletAddress = String(publicKey);
+
+  const [showDashboard, setshowDashboard] = useState(true);
 
   const validateUser = async () => {
     if (walletAddress === null) {
@@ -65,14 +70,25 @@ const HomePage = () => {
   validateUser();
 
   return (
-    <div>
-      <Navbar />
+    <div className="home">
+      <div className="container mx-auto">
+        <Navbar
+          showDashboard={showDashboard}
+          setshowDashboard={setshowDashboard}
+        />
 
-      <Main user={user} balance={balance} validateUser={validateUser} />
+        {showDashboard ? (
+          <Dashboard />
+        ) : (
+          <Balance validateUser={validateUser} user={user} balance={balance} />
+        )}
 
-      <PlayArea validateUser={validateUser} balance={balance} />
+        {/* <Main user={user} balance={balance} validateUser={validateUser} /> */}
 
-      <ToastContainer />
+        {/* <PlayArea validateUser={validateUser} balance={balance} /> */}
+
+        <ToastContainer />
+      </div>
     </div>
   );
 };

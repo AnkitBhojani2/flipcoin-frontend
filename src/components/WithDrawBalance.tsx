@@ -26,7 +26,7 @@ type WithDrawButtonProps = {
   validateUser: any;
 };
 
-const WithDrawButton: React.FunctionComponent<WithDrawButtonProps> = ({
+const WithDrawBalance: React.FunctionComponent<WithDrawButtonProps> = ({
   setTransactionPopupState,
   setTransactionMessage,
   setTransactionHash,
@@ -110,45 +110,12 @@ const WithDrawButton: React.FunctionComponent<WithDrawButtonProps> = ({
       }
     }
   };
-
-  async function SendTransactionFunction(
-    conn: any,
-    transaction: any,
-    signers: Keypair[]
-  ) {
-    if (window.solana.publicKey) {
-      transaction.feePayer = window.solana.publicKey;
-      transaction.recentBlockhash = (
-        await conn.getRecentBlockhash("max")
-      ).blockhash;
-      await transaction.setSigners(
-        window.solana.publicKey,
-        ...signers.map((s) => s.publicKey)
-      );
-      if (signers.length != 0) await transaction.partialSign(...signers);
-      if (window.solana) {
-        const signedTransaction = await window.solana.signTransaction(
-          transaction
-        );
-        let hash = await conn.sendRawTransaction(
-          await signedTransaction.serialize()
-        );
-        let statusCode = 201;
-        const confiermationTransaction = JSON.parse(
-          JSON.stringify(await conn.confirmTransaction(hash))
-        );
-        if (confiermationTransaction) {
-          statusCode = 200;
-        }
-        return { status: statusCode, hash: hash };
-      }
-    }
-  }
   return (
-    <div className="block p-6 max-w-sm bg-white rounded-lg border border-gray-200 shadow-md hover:bg-gray-100 dark:bg-gray-800 dark:border-gray-700 dark:hover:bg-gray-700">
+    <div className="add-balance-card bg-purple w-[90%] md:h-80 md:w-96 mx-auto flex flex-col py-6 justify-center items-center gap-4 text-xl">
+      <h1>Withdraw Balance</h1>
       <input
         type="number"
-        className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+        className="rounded px-3 text-black"
         required
         value={amount === 0 ? "" : amount}
         onChange={(e) => {
@@ -157,15 +124,13 @@ const WithDrawButton: React.FunctionComponent<WithDrawButtonProps> = ({
       />
       <button
         type="button"
-        className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 mr-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800 mt-3"
-        onClick={() => {
-          withDrawBalance();
-        }}
+        className="focus:outline-none text-white bg-red-700 hover:bg-red-800 focus:ring-4 focus:ring-red-300 font-medium rounded-lg px-5 py-2.5 mr-2 mb-2 dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-900"
+        onClick={withDrawBalance}
       >
-        Withdraw Balance
+        Withdraw
       </button>
     </div>
   );
 };
 
-export default WithDrawButton;
+export default WithDrawBalance;

@@ -1,0 +1,52 @@
+#balance {
+  color: aliceblue;
+  font-family: "MyWebFont";
+}
+
+.bg-purple {
+  background-color: rgba(44, 28, 55, 0.56);
+}
+
+.input {
+  display: flex;
+  flex-direction: column;
+}
+.input input {
+  width: 148px;
+  height: 40px;
+  outline: none;
+  border-radius: 6px;
+  border: none;
+  font-family: "MyWebFont";
+  margin-bottom: 10px;
+  padding: 0px 6px;
+  color: rgb(255, 255, 255);
+  background-color: rgba(255, 0, 0, 0.5);
+}
+.input select {
+  width: 160px;
+  height: 40px;
+  outline: none;
+  border: none;
+  font-family: "MyWebFont";
+  margin-bottom: 10px;
+
+  border-radius: 6px;
+  padding: 0px 6px;
+  color: rgb(255, 255, 255);
+  background-color: rgba(255, 0, 0, 0.5);
+}
+.input button {
+  width: 160px;
+  height: 40px;
+  outline: none;
+  border: none;
+  border-radius: 6px;
+  margin-bottom: 10px;
+
+  font-family: "MyWebFont";
+  font-size: 20px;
+  padding: 0px 6px;
+  color: rgb(255, 255, 255);
+  background-color: rgba(255, 0, 0, 0.5);
+}
