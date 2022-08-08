@@ -71,6 +71,9 @@
   .nav-items ul li {
     font-size: 18px;
   }
+  .white-board {
+    display: none;
+  }
 }
 @media only screen and (max-width: 860px) {
   .navbar {
@@ -146,15 +149,18 @@
 }
 
 .head-tail button {
-  width: 500px;
-  height: 100px;
+  /* width: 500px;
+  height: 100px; */
+  width: 22vw;
+  height: 17vh;
   font-size: 40px;
   margin: 5px 0px;
   border-radius: 10px;
 }
 
 .amounts button {
-  height: 50px;
+  /* height: 50px; */
+  height: 7vh;
   border-radius: 8px;
 }
 

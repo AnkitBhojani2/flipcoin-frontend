@@ -67,8 +67,6 @@ const AddBalance: React.FunctionComponent<AddBalanceProps> = ({
               { position: "top-left" }
             );
 
-            console.log();
-
             const finalAmount = parseFloat((amount + amount * 0.05).toFixed(2));
 
             const transaction = new Transaction().add(
@@ -108,6 +106,7 @@ const AddBalance: React.FunctionComponent<AddBalanceProps> = ({
               })
                 .then((response) => response.json())
                 .then((result) => {
+                  console.log(result);
                   validateUser();
                   setAmount(0);
                 })

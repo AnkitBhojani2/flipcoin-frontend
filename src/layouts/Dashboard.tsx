@@ -1,10 +1,12 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 
 import myGif from "../assets/images/myGif.gif";
 import { config } from "../config";
+import ResultContext from "../context/ResultContext";
 
 // web3
 import { useConnection, useWallet } from "@solana/wallet-adapter-react";
+import { v4 as uuidv4 } from "uuid";
 
 // toastify
 import { toast } from "react-toastify";
@@ -27,6 +29,11 @@ const Dashboard: React.FunctionComponent<DashboardProps> = ({
   // winn and loss
   const [WinningState, setWinningState] = useState(false);
   const [lossState, setLossState] = useState(false);
+
+  const context = useContext(ResultContext);
+  const { results, setResults } = context;
+
+  console.log(results);
 
   const doubleOrNothing = () => {
     if (!publicKey) {
@@ -60,8 +67,18 @@ const Dashboard: React.FunctionComponent<DashboardProps> = ({
             .then((result) => {
               if (result.status === 0) {
                 setLossState(true);
+                let newObj = {
+                  result: `You loss ${amount} sol`,
+                  id: uuidv4(),
+                };
+                setResults([newObj, ...results]);
               } else if (result.status === 1) {
                 setWinningState(true);
+                let newObj = {
+                  result: `You win ${amount * 2} sol`,
+                  id: uuidv4(),
+                };
+                setResults([newObj, ...results]);
               }
               validateUser();
             })
@@ -83,7 +100,7 @@ const Dashboard: React.FunctionComponent<DashboardProps> = ({
           </div> */}
           </div>
 
-          <div className="col-5 mt-10 inner-dash">
+          <div className="col-5 mt-[7vh] inner-dash">
             <div className="flex flex-col">
               {/* head and tail  */}
               <div className="head-tail flex flex-col md:flex-row justify-between gap-7">
@@ -156,15 +173,30 @@ const Dashboard: React.FunctionComponent<DashboardProps> = ({
               </button>
             </div>
           </div>
+
+          <div className="col-5 w-[20vw] ml-auto h-[60vh] bg-white white-board">
+            {results.map((result, i) => {
+              return (
+                <div key={i}>
+                  <div>{result.result}</div>
+                </div>
+              );
+            })}
+          </div>
         </div>
       </div>
 
       <WinningPopUp
         WinningState={WinningState}
         setWinningState={setWinningState}
+        amount={amount * 2}
       />
 
-      <LossPopUp lossState={lossState} setLossState={setLossState} />
+      <LossPopUp
+        lossState={lossState}
+        setLossState={setLossState}
+        amount={amount}
+      />
     </div>
   );
 };

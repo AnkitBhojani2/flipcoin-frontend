@@ -4,11 +4,13 @@ import { FaSmile } from "react-icons/fa";
 type WinningPopUpProps = {
   WinningState: Boolean;
   setWinningState: React.Dispatch<React.SetStateAction<boolean>>;
+  amount: number;
 };
 
 const WinningPopUp: React.FunctionComponent<WinningPopUpProps> = ({
   WinningState,
   setWinningState,
+  amount,
 }) => {
   return (
     <div
@@ -30,7 +32,7 @@ const WinningPopUp: React.FunctionComponent<WinningPopUpProps> = ({
             </div>
             <div className="text-xl leading-relaxed text-gray-500 dark:text-gray-400 text-center my-3">
               <div>Congrats !</div>
-              <div>You are Winner</div>
+              <div>You win {amount} sol</div>
             </div>
             <div>
               <button

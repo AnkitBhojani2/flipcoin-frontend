@@ -1,12 +1,13 @@
 import { Wallet } from "./wallet/Wallet";
 import HomePage from "./pages/HomePage";
+import ResultState from "./context/ResultState";
 
 const App = (): JSX.Element => (
-  <div className="">
+  <ResultState>
     <Wallet>
       <HomePage />
     </Wallet>
-  </div>
+  </ResultState>
 );
 
 export default App;

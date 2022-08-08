@@ -4,11 +4,13 @@ import { FaFrown } from "react-icons/fa";
 type LossPopUpProps = {
   lossState: Boolean;
   setLossState: React.Dispatch<React.SetStateAction<boolean>>;
+  amount: number;
 };
 
 const LossPopUp: React.FunctionComponent<LossPopUpProps> = ({
   lossState,
   setLossState,
+  amount,
 }) => {
   return (
     <div
@@ -29,7 +31,7 @@ const LossPopUp: React.FunctionComponent<LossPopUpProps> = ({
               <FaFrown color="yellow" size="6em" />
             </div>
             <div className="text-xl leading-relaxed text-gray-500 dark:text-gray-400 text-center my-3">
-              <div>Sorry !</div>
+              <div>Sorry ! You lose {amount} sol</div>
               <div>Beter Luck Next Time</div>
             </div>
             <div>

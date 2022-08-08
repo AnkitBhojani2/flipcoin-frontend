@@ -16,7 +16,10 @@ type PlayAreaProps = {
   balance: any;
 };
 
-const PlayArea: React.FunctionComponent<PlayAreaProps> = ({ validateUser, balance }) => {
+const PlayArea: React.FunctionComponent<PlayAreaProps> = ({
+  validateUser,
+  balance,
+}) => {
   const { publicKey, sendTransaction } = useWallet();
   const [coin, setCoin] = useState(0);
   const [amount, setAmount] = useState(0.05);
@@ -38,32 +41,31 @@ const PlayArea: React.FunctionComponent<PlayAreaProps> = ({ validateUser, balanc
       });
     } else {
       try {
+        if (balance > amount) {
+          var myHeaders = new Headers();
+          myHeaders.append("Content-Type", "application/json");
 
-        if(balance > amount) {
-        var myHeaders = new Headers();
-        myHeaders.append("Content-Type", "application/json");
+          var raw = JSON.stringify({
+            walletAddress: publicKey,
+            digAmount: amount,
+          });
 
-        var raw = JSON.stringify({
-          walletAddress: publicKey,
-          digAmount: amount,
-        });
-
-        fetch(config.doubleOrNothing, {
-          method: "POST",
-          headers: myHeaders,
-          body: raw,
-          redirect: "follow",
-        })
-          .then((response) => response.json())
-          .then((result) => {
-            if (result.status === 0) {
-              setLossState(true);
-            } else if (result.status === 1) {
-              setWinningState(true);
-            }
-            validateUser();
+          fetch(config.doubleOrNothing, {
+            method: "POST",
+            headers: myHeaders,
+            body: raw,
+            redirect: "follow",
           })
-          .catch((error) => console.log("error", error));
+            .then((response) => response.json())
+            .then((result) => {
+              if (result.status === 0) {
+                setLossState(true);
+              } else if (result.status === 1) {
+                setWinningState(true);
+              }
+              validateUser();
+            })
+            .catch((error) => console.log("error", error));
         } else {
           toast.error(`You don't have balance!!`);
         }
@@ -188,13 +190,13 @@ const PlayArea: React.FunctionComponent<PlayAreaProps> = ({ validateUser, balanc
           </button>
         </div>
       </div>
-
+      {/* 
       <WinningPopUp
         WinningState={WinningState}
         setWinningState={setWinningState}
-      />
+      /> */}
 
-      <LossPopUp lossState={lossState} setLossState={setLossState} />
+      {/* <LossPopUp lossState={lossState} setLossState={setLossState} /> */}
     </div>
   );
 };
